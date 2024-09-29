@@ -88,7 +88,6 @@ const Modal = ({ album, onClose }) => {
         </div>
       </div>
 
-      {/* Add the audio element here */}
       <audio ref={audioRef} />
     </div>
   );

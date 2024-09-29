@@ -19,7 +19,7 @@ const HomePage = () => {
       <h2 className="absolute top-1/2 -translate-y-1/2 font-bold mb-4 text-6xl md:text-[11rem] text-[#dfff1d] fire-sans">
         DA FASH
       </h2>
-      <div className="absolute w-[60%] bottom-0 right-10 flex gap-4 overflow-x-auto pb-4 text-white scrollbar-thin scrollbar-thumb-[#dfff1d] scrollbar-track-black">
+      <div className="absolute w-[60%] bottom-7 right-10 flex gap-4 overflow-x-auto pb-4 text-white scrollbar-thin scrollbar-thumb-[#dfff1d] scrollbar-track-black">
         {albums.map((album) => (
           <AlbumCard
             key={album.id}

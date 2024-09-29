@@ -41,3 +41,42 @@ export const albums = [
     ],
   },
 ];
+
+export const videos = [
+  {
+    id: 1,
+    title: "DA FASH - Live at Metropolis",
+    thumbnail: "/api/placeholder/320/180",
+    duration: "1:23:45",
+  },
+  {
+    id: 2,
+    title: "Behind the Scenes - Album Recording",
+    thumbnail: "/api/placeholder/320/180",
+    duration: "15:30",
+  },
+  {
+    id: 3,
+    title: "DA FASH - 'Neon Nights' Official Music Video",
+    thumbnail: "/api/placeholder/320/180",
+    duration: "4:12",
+  },
+  {
+    id: 4,
+    title: "Interview with DA FASH - The Creative Process",
+    thumbnail: "/api/placeholder/320/180",
+    duration: "28:55",
+  },
+  {
+    id: 5,
+    title: "DA FASH - Unplugged Session",
+    thumbnail: "/api/placeholder/320/180",
+    duration: "37:20",
+  },
+  {
+    id: 6,
+    title: "DA FASH - Tour Diary 2024",
+    thumbnail: "/api/placeholder/320/180",
+    duration: "52:10",
+  },
+];
