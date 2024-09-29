@@ -32,12 +32,6 @@ const Navbar = () => {
           >
             Radio
           </Link>
-          <Link
-            to="/videos"
-            className="text-white px-4 py-2 lg:hover:text-[#dfff1d]"
-          >
-            Videos
-          </Link>
         </div>
       </div>
     </nav>
