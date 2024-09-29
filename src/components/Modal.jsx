@@ -52,7 +52,7 @@ const Modal = ({ album, onClose }) => {
       >
         <button
           onClick={onClose}
-          className="absolute top-2 right-2 text-gray-400 hover:text-white"
+          className="absolute top-2 right-2 text-white lg:text-gray-400 lg:hover:text-white"
         >
           <IoCloseOutline size={28} />
         </button>
@@ -74,7 +74,7 @@ const Modal = ({ album, onClose }) => {
                 <span className="mr-2">{song.name}</span>
                 <button
                   onClick={() => togglePlayPause(song)}
-                  className="text-sm text-black px-2 py-1 rounded hover:text-[#dfff1d] transition-all duration-300"
+                  className="text-sm text-white px-2 py-1 rounded hover:text-[#dfff1d] transition-all duration-300"
                 >
                   {currentPlaying === song ? (
                     <IoPauseSharp size={24} />
