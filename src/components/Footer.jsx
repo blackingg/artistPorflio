@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 const Footer = () => {
   return (
-    <div className="absolute bottom-1 left-1/2 -translate-x-1/2 text-white text-sm whitespace-nowrap">
+    <div className="absolute bottom-0 lg:bottom-1 left-1/2 -translate-x-1/2 text-white text-sm whitespace-nowrap">
       <Link
         to="https://mubarakodetunde-portfolio.netlify.app"
         target="_blank"
