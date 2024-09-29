@@ -142,7 +142,7 @@ const Radio = () => {
     <div className="bg-black text-white min-h-screen px-4 md:px-8 pt-20 flex flex-col">
       <div className="flex flex-col md:flex-row">
         <div className="flex-1 md:pr-8 mb-8 md:mb-0">
-          <div className="md:absolute md:top-1/2 md:left-[7%] lg:left-[15%] md:-translate-y-1/2 w-full bg-[#252323] rounded-lg p-6 mt-[30%] md:mt-0 max-w-2xl mx-auto">
+          <div className="md:absolute md:top-1/2 md:left-[7%] lg:left-[15%] md:-translate-y-1/2 w-full lg:w-[40%] bg-[#252323] rounded-lg p-6 mt-[30%] md:mt-0 max-w-2xl mx-auto">
             {currentSong && (
               <div className="flex flex-col items-center mb-6">
                 <div className="relative w-full h-56 md:h-64 mb-4 overflow-hidden rounded-lg">
@@ -218,11 +218,11 @@ const Radio = () => {
         </div>
 
         <div
-          className={`lg:w-1/3 bg-[#252323] rounded-lg p-6 overflow-y-hidden max-h-screen transition-all duration-300 ease-in-out ${
+          className={`lg:w-1/3 bg-[#252323] rounded-lg p-6 overflow-hidden lg:h-[80vh] transition-all duration-300 ease-in-out ${
             showQueue ? "fixed inset-0 z-10 lg:relative" : "hidden lg:block"
           }`}
         >
-          <div className="flex justify-between items-center">
+          <div className="flex justify-between items-center mb-4">
             <h2 className="text-2xl font-bold text-[#dfff1d]">Queue</h2>
             <button
               onClick={toggleQueue}
@@ -231,29 +231,31 @@ const Radio = () => {
               <IoCloseOutline />
             </button>
           </div>
-          <ul className="h-full overflow-y-auto pb-5">
-            {queue.map((song) => (
-              <li
-                key={song.uniqueId}
-                className={`py-2 px-4 rounded-lg mb-2 flex items-center ${
-                  currentSong && currentSong.uniqueId === song.uniqueId
-                    ? "bg-[#dfff1d] text-black"
-                    : "lg:hover:bg-gray-800"
-                }`}
-                onClick={() => setCurrentSong(song)}
-              >
-                <img
-                  src={song.albumImage}
-                  alt={song.albumTitle}
-                  className="w-10 h-10 object-cover rounded-lg mr-3"
-                />
-                <div>
-                  <p className="font-semibold">{song.name}</p>
-                  <p className="text-sm text-gray-400">{song.albumTitle}</p>
-                </div>
-              </li>
-            ))}
-          </ul>
+          <div className="h-[calc(100%-3rem)] overflow-y-auto  scrollbar-thin scrollbar-thumb-[#dfff1d] scrollbar-track-[#252323]">
+            <ul className="pb-5">
+              {queue.map((song) => (
+                <li
+                  key={song.uniqueId}
+                  className={`py-2 px-4 rounded-lg mb-2 flex items-center ${
+                    currentSong && currentSong.uniqueId === song.uniqueId
+                      ? "bg-[#dfff1d] text-black"
+                      : "lg:hover:bg-gray-800"
+                  }`}
+                  onClick={() => setCurrentSong(song)}
+                >
+                  <img
+                    src={song.albumImage}
+                    alt={song.albumTitle}
+                    className="w-10 h-10 object-cover rounded-lg mr-3"
+                  />
+                  <div>
+                    <p className="font-semibold">{song.name}</p>
+                    <p className="text-sm text-gray-400">{song.albumTitle}</p>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </div>
         </div>
       </div>
 
