@@ -31,7 +31,6 @@ const Radio = () => {
       }))
     );
     setQueue(allSongs);
-    setCurrentSong(allSongs[0]);
   }, []);
 
   useEffect(() => {
@@ -75,12 +74,17 @@ const Radio = () => {
   };
 
   const handlePlayPause = () => {
-    if (isPlaying) {
-      audioRef.current.pause();
-    } else {
-      audioRef.current.play();
+    if (currentSong) {
+      if (isPlaying) {
+        audioRef.current.pause();
+      } else {
+        audioRef.current.play();
+      }
+      setIsPlaying(!isPlaying);
+    } else if (queue.length > 0) {
+      setCurrentSong(queue[0]);
+      setIsPlaying(true);
     }
-    setIsPlaying(!isPlaying);
   };
 
   const handleShuffle = () => {
@@ -88,7 +92,9 @@ const Radio = () => {
     if (!shuffleMode) {
       const shuffledQueue = [...queue].sort(() => Math.random() - 0.5);
       setQueue(shuffledQueue);
-      setCurrentSong(shuffledQueue[0]);
+      if (!currentSong) {
+        setCurrentSong(shuffledQueue[0]);
+      }
     } else {
       const orderedQueue = albums.flatMap((album, albumIndex) =>
         album.songs.map((song, songIndex) => ({
@@ -100,37 +106,46 @@ const Radio = () => {
         }))
       );
       setQueue(orderedQueue);
-      setCurrentSong(orderedQueue[0]);
+      if (!currentSong) {
+        setCurrentSong(orderedQueue[0]);
+      }
     }
   };
 
   const handleNextSong = () => {
-    const currentIndex = queue.findIndex(
-      (song) => song.uniqueId === currentSong.uniqueId
-    );
-    const nextIndex = (currentIndex + 1) % queue.length;
-    setCurrentSong(queue[nextIndex]);
-    setIsPlaying(true);
-    setProgress(0); // Reset progress when changing songs
+    if (queue.length > 0) {
+      const currentIndex = currentSong
+        ? queue.findIndex((song) => song.uniqueId === currentSong.uniqueId)
+        : -1;
+      const nextIndex = (currentIndex + 1) % queue.length;
+      setCurrentSong(queue[nextIndex]);
+      setIsPlaying(true);
+      setProgress(0);
+    }
   };
 
   const handlePrevSong = () => {
-    const currentIndex = queue.findIndex(
-      (song) => song.uniqueId === currentSong.uniqueId
-    );
-    const prevIndex = (currentIndex - 1 + queue.length) % queue.length;
-    setCurrentSong(queue[prevIndex]);
-    setIsPlaying(true);
+    if (queue.length > 0) {
+      const currentIndex = currentSong
+        ? queue.findIndex((song) => song.uniqueId === currentSong.uniqueId)
+        : 0;
+      const prevIndex = (currentIndex - 1 + queue.length) % queue.length;
+      setCurrentSong(queue[prevIndex]);
+      setIsPlaying(true);
+      setProgress(0);
+    }
   };
 
   const handleSeek = (e) => {
-    const rect = e.currentTarget.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const clickedValue = (x / rect.width) * 100;
-    setProgress(clickedValue);
-    if (audioRef.current) {
-      audioRef.current.currentTime =
-        (clickedValue / 100) * audioRef.current.duration;
+    if (currentSong) {
+      const rect = e.currentTarget.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const clickedValue = (x / rect.width) * 100;
+      setProgress(clickedValue);
+      if (audioRef.current) {
+        audioRef.current.currentTime =
+          (clickedValue / 100) * audioRef.current.duration;
+      }
     }
   };
 
@@ -138,42 +153,62 @@ const Radio = () => {
     setShowQueue(!showQueue);
   };
 
+  const selectSong = (song) => {
+    setCurrentSong(song);
+    setIsPlaying(true);
+    setProgress(0);
+  };
+
   return (
     <div className="bg-black text-white min-h-screen px-4 md:px-8 pt-20 flex flex-col">
       <div className="flex flex-col md:flex-row">
         <div className="flex-1 md:pr-8 mb-8 md:mb-0">
           <div className="md:absolute md:top-1/2 md:left-[7%] lg:left-[15%] md:-translate-y-1/2 w-full lg:w-[40%] bg-[#252323] rounded-lg p-6 mt-[30%] md:mt-0 max-w-2xl mx-auto">
-            {currentSong && (
-              <div className="flex flex-col items-center mb-6">
-                <div className="relative w-full h-56 md:h-64 mb-4 overflow-hidden rounded-lg">
-                  <img
-                    src={currentSong.albumImage}
-                    alt={currentSong.albumTitle}
-                    className="w-full h-full object-cover filter grayscale"
-                  />
-                  <div
-                    className="absolute top-0 left-0 w-full h-full"
-                    style={{
-                      clipPath: `inset(0 ${100 - progress}% 0 0)`,
-                    }}
-                  >
+            <div className="flex flex-col items-center mb-6">
+              <div className="relative w-full h-56 md:h-64 mb-4 overflow-hidden rounded-lg">
+                {currentSong ? (
+                  <>
                     <img
                       src={currentSong.albumImage}
                       alt={currentSong.albumTitle}
-                      className="w-full h-full object-cover"
+                      className="w-full h-full object-cover filter grayscale"
                     />
-                  </div>
-                  <div
-                    className="absolute top-0 left-0 w-full h-full cursor-pointer"
-                    onClick={handleSeek}
-                  ></div>
-                </div>
-                <div className="text-center">
-                  <h2 className="text-2xl font-semibold">{currentSong.name}</h2>
-                  <p className="text-[#dfff1d]">{currentSong.albumTitle}</p>
-                </div>
+                    <div
+                      className="absolute top-0 left-0 w-full h-full"
+                      style={{
+                        clipPath: `inset(0 ${100 - progress}% 0 0)`,
+                      }}
+                    >
+                      <img
+                        src={currentSong.albumImage}
+                        alt={currentSong.albumTitle}
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                  </>
+                ) : (
+                  <img
+                    src="/img/placeholder.jpg"
+                    alt="Placeholder"
+                    className="w-full h-auto object-cover filter grayscale"
+                  />
+                )}
+                <div
+                  className="absolute top-0 left-0 w-full h-full cursor-pointer"
+                  onClick={handleSeek}
+                ></div>
               </div>
-            )}
+              <div className="text-center">
+                <h2 className="text-2xl font-semibold">
+                  {currentSong ? currentSong.name : "No song selected"}
+                </h2>
+                <p className="text-[#dfff1d]">
+                  {currentSong
+                    ? currentSong.albumTitle
+                    : "Choose a song to play"}
+                </p>
+              </div>
+            </div>
 
             <div className="flex justify-center items-center space-x-6 mb-8">
               <button
@@ -231,7 +266,7 @@ const Radio = () => {
               <IoCloseOutline />
             </button>
           </div>
-          <div className="h-[calc(100%-3rem)] overflow-y-auto  scrollbar-thin scrollbar-thumb-[#dfff1d] scrollbar-track-[#252323]">
+          <div className="h-[calc(100%-3rem)] overflow-y-auto scrollbar-thin scrollbar-thumb-[#dfff1d] scrollbar-track-[#252323]">
             <ul className="pb-5">
               {queue.map((song) => (
                 <li
@@ -241,7 +276,7 @@ const Radio = () => {
                       ? "bg-[#dfff1d] text-black"
                       : "lg:hover:bg-gray-800"
                   }`}
-                  onClick={() => setCurrentSong(song)}
+                  onClick={() => selectSong(song)}
                 >
                   <img
                     src={song.albumImage}
