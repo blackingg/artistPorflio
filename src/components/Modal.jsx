@@ -77,7 +77,10 @@ const Modal = ({ album, onClose }) => {
                   className="text-sm text-white px-2 py-1 rounded hover:text-[#dfff1d] transition-all duration-300"
                 >
                   {currentPlaying === song ? (
-                    <IoPauseSharp size={24} />
+                    <IoPauseSharp
+                      size={24}
+                      color="#dfff1d"
+                    />
                   ) : (
                     <IoPlaySharp size={24} />
                   )}
