@@ -1,3 +1,12 @@
+export const queueVariants = {
+  desktopInitial: { x: "100%", opacity: 0 },
+  desktopAnimate: { x: 0, opacity: 1 },
+  desktopExit: { x: "100%", opacity: 0 },
+  mobileInitial: { y: "100%", opacity: 0 },
+  mobileAnimate: { y: 0, opacity: 1 },
+  mobileExit: { y: "100%", opacity: 0 },
+};
+
 export const albums = [
   {
     id: 1,
