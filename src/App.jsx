@@ -8,7 +8,7 @@ import Footer from "./components/Footer";
 
 function App() {
   return (
-    <div className="w-screen h-screen overflow-x-hidden">
+    <div className="max-w-screen h-screen overflow-auto overflow-x-hidden">
       <Navbar />
       <Footer />
       <Routes>

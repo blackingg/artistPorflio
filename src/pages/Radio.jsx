@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
+import { motion } from "framer-motion";
 import {
   IoPlayCircleOutline,
   IoPauseCircleOutline,
@@ -7,6 +8,7 @@ import {
   IoListOutline,
   IoCloseOutline,
 } from "react-icons/io5";
+import { IoMdLink } from "react-icons/io";
 import { MdSkipPrevious, MdOutlineSkipNext } from "react-icons/md";
 import { albums } from "../data";
 
@@ -160,12 +162,18 @@ const Radio = () => {
   };
 
   return (
-    <div className="bg-black text-white min-h-screen px-4 md:px-8 pt-20 flex flex-col">
+    <motion.div className="bg-black text-white min-h-screen px-4 md:px-8 pt-20 flex flex-col">
       <div className="flex flex-col md:flex-row">
         <div className="flex-1 md:pr-8 mb-8 md:mb-0">
-          <div className="md:absolute md:top-1/2 md:left-[7%] lg:left-[15%] md:-translate-y-1/2 w-full lg:w-[40%] bg-[#252323] rounded-lg p-6 mt-[30%] md:mt-0 max-w-2xl mx-auto">
+          <motion.div
+            transition={{ duration: 0.2, delay: 0 }}
+            className="md:absolute md:top-1/2 md:left-[7%] lg:left-[15%] md:-translate-y-1/2 w-full lg:w-[40%] bg-[#252323] rounded-lg p-6 mt-[30%] md:mt-0 max-w-2xl mx-auto"
+          >
             <div className="flex flex-col items-center mb-6">
-              <div className="relative w-full h-56 md:h-64 mb-4 overflow-hidden rounded-lg">
+              <motion.div
+                layoutId="albumCover"
+                className="relative w-full h-56 md:h-64 mb-4 overflow-hidden rounded-lg"
+              >
                 {currentSong ? (
                   <>
                     <img
@@ -178,6 +186,7 @@ const Radio = () => {
                       style={{
                         clipPath: `inset(0 ${100 - progress}% 0 0)`,
                       }}
+                      animate={{ clipPath: `inset(0 ${100 - progress}% 0 0)` }}
                     >
                       <img
                         src={currentSong.albumImage}
@@ -197,8 +206,13 @@ const Radio = () => {
                   className="absolute top-0 left-0 w-full h-full cursor-pointer"
                   onClick={handleSeek}
                 ></div>
-              </div>
-              <div className="text-center">
+              </motion.div>
+              <motion.div
+                initial={{ y: 20, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ duration: 0.5, delay: 0.3 }}
+                className="text-center"
+              >
                 <h2 className="text-2xl font-semibold">
                   {currentSong ? currentSong.name : "No song selected"}
                 </h2>
@@ -207,102 +221,149 @@ const Radio = () => {
                     ? currentSong.albumTitle
                     : "Choose a song to play"}
                 </p>
-              </div>
+              </motion.div>
             </div>
 
-            <div className="flex justify-center items-center space-x-6 mb-8">
-              <button
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ duration: 0.5, delay: 0.4 }}
+              className="flex justify-center items-center space-x-6 mb-8"
+            >
+              <motion.button
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.9 }}
                 onClick={handlePrevSong}
                 className="text-3xl text-[#dfff1d] lg:hover:text-yellow-300 transition-colors"
               >
                 <MdSkipPrevious />
-              </button>
-              <button
+              </motion.button>
+              <motion.button
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.9 }}
                 onClick={handlePlayPause}
                 className="text-5xl text-[#dfff1d] lg:hover:text-yellow-300 transition-colors"
               >
                 {isPlaying ? <IoPauseCircleOutline /> : <IoPlayCircleOutline />}
-              </button>
-              <button
+              </motion.button>
+              <motion.button
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.9 }}
                 onClick={handleNextSong}
                 className="text-3xl text-[#dfff1d] lg:hover:text-yellow-300 transition-colors"
               >
                 <MdOutlineSkipNext />
-              </button>
-            </div>
+              </motion.button>
+            </motion.div>
 
-            <div className="flex justify-center space-x-4">
-              <button
+            <motion.div
+              initial={{ y: 20, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ duration: 0.5, delay: 0.5 }}
+              className="flex justify-center space-x-4"
+            >
+              <motion.button
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.9 }}
                 onClick={handleShuffle}
                 className={`text-2xl ${
                   shuffleMode ? "text-[#dfff1d]" : "text-gray-500"
                 } lg:hover:text-yellow-300 transition-colors`}
               >
                 <IoShuffleOutline />
-              </button>
-              <button
+              </motion.button>
+              <motion.button
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.9 }}
                 onClick={handleRepeat}
                 className={`text-2xl ${
                   repeatMode ? "text-[#dfff1d]" : "text-gray-500"
                 } lg:hover:text-yellow-300 transition-colors`}
               >
                 <IoRepeatOutline />
-              </button>
-            </div>
-          </div>
+              </motion.button>
+            </motion.div>
+          </motion.div>
         </div>
 
         <div
-          className={`lg:w-1/3 bg-[#252323] rounded-lg p-6 overflow-hidden lg:h-[80vh] transition-all duration-300 ease-in-out ${
+          className={`lg:w-1/3 bg-[#252323] rounded-lg p-6 overflow-hidden lg:h-[80vh] fixed inset-0 z-10 lg:relative ${
             showQueue ? "fixed inset-0 z-10 lg:relative" : "hidden lg:block"
           }`}
         >
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-2xl font-bold text-[#dfff1d]">Queue</h2>
-            <button
+            <motion.button
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.9 }}
               onClick={toggleQueue}
               className="lg:hidden text-2xl text-[#dfff1d] lg:hover:text-yellow-300"
             >
               <IoCloseOutline />
-            </button>
+            </motion.button>
           </div>
-          <div className="h-[calc(100%-3rem)] overflow-y-auto scrollbar-thin scrollbar-thumb-[#dfff1d] scrollbar-track-[#252323]">
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+            className="h-[calc(100%-3rem)] overflow-x-hidden overflow-y-auto scrollbar-thin scrollbar-thumb-[#dfff1d] scrollbar-track-[#252323]"
+          >
             <ul className="pb-5">
-              {queue.map((song) => (
-                <li
-                  key={song.uniqueId}
-                  className={`py-2 px-4 rounded-lg mb-2 flex items-center ${
-                    currentSong && currentSong.uniqueId === song.uniqueId
-                      ? "bg-[#dfff1d] text-black"
-                      : "lg:hover:bg-gray-800"
-                  }`}
-                  onClick={() => selectSong(song)}
-                >
-                  <img
-                    src={song.albumImage}
-                    alt={song.albumTitle}
-                    className="w-10 h-10 object-cover rounded-lg mr-3"
-                  />
-                  <div>
-                    <p className="font-semibold">{song.name}</p>
-                    <p className="text-sm text-gray-400">{song.albumTitle}</p>
-                  </div>
-                </li>
+              {queue.map((song, index) => (
+                <div className="flex justify-between pr-2">
+                  <motion.li
+                    key={song.uniqueId}
+                    initial={{ x: -20, opacity: 0 }}
+                    animate={{ x: 0, opacity: 1 }}
+                    transition={{ duration: 0.3, delay: index * 0.05 }}
+                    whileHover={{ scale: 1.02 }}
+                    className={`py-2 px-4 rounded-lg mb-2 flex items-center ${
+                      currentSong && currentSong.uniqueId === song.uniqueId
+                        ? "bg-[#dfff1d] text-black"
+                        : "lg:hover:bg-gray-800"
+                    }`}
+                    onClick={() => selectSong(song)}
+                  >
+                    <img
+                      src={song.albumImage}
+                      alt={song.albumTitle}
+                      className="w-10 h-10 object-cover rounded-lg mr-3"
+                    />
+                    <div>
+                      <p className="font-semibold">{song.name}</p>
+                      <p className="text-sm text-gray-400">{song.albumTitle}</p>
+                    </div>
+                  </motion.li>
+                  <motion.a
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.9 }}
+                    href={song.link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <IoMdLink
+                      size={20}
+                      className="text-white hover:text-[#dfff1d] cursor-pointer"
+                    />
+                  </motion.a>
+                </div>
               ))}
             </ul>
-          </div>
+          </motion.div>
         </div>
       </div>
 
-      <button
+      <motion.button
+        whileHover={{ scale: 1.1 }}
+        whileTap={{ scale: 0.9 }}
         onClick={toggleQueue}
         className="lg:hidden fixed bottom-4 right-4 bg-[#dfff1d] text-black p-3 rounded-full shadow-lg"
       >
         <IoListOutline size={24} />
-      </button>
+      </motion.button>
 
       <audio ref={audioRef} />
-    </div>
+    </motion.div>
   );
 };
 
