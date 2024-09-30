@@ -15,7 +15,9 @@ import { albums, queueVariants } from "../data";
 const Radio = () => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentSong, setCurrentSong] = useState(null);
+  const [originalQueue, setOriginalQueue] = useState([]);
   const [queue, setQueue] = useState([]);
+  const [currentIndex, setCurrentIndex] = useState(0);
   const [shuffleMode, setShuffleMode] = useState(false);
   const [repeatMode, setRepeatMode] = useState(false);
   const [progress, setProgress] = useState(0);
@@ -34,6 +36,10 @@ const Radio = () => {
       }))
     );
     setQueue(allSongs);
+    setOriginalQueue(allSongs);
+    if (allSongs.length > 0) {
+      setCurrentSong(allSongs[0]);
+    }
   }, []);
 
   useEffect(() => {
@@ -70,7 +76,7 @@ const Radio = () => {
       audio.removeEventListener("timeupdate", updateProgress);
       audio.removeEventListener("ended", handleSongEnd);
     };
-  }, [repeatMode]);
+  }, [repeatMode, currentIndex, queue]);
 
   useEffect(() => {
     const checkMobile = () => {
@@ -108,18 +114,9 @@ const Radio = () => {
         setCurrentSong(shuffledQueue[0]);
       }
     } else {
-      const orderedQueue = albums.flatMap((album, albumIndex) =>
-        album.songs.map((song, songIndex) => ({
-          ...song,
-          albumTitle: album.title,
-          albumImage: album.image,
-          uniqueId: `${albumIndex}-${songIndex}`,
-          songUrl: song.songUrl,
-        }))
-      );
-      setQueue(orderedQueue);
+      setQueue([...originalQueue]);
       if (!currentSong) {
-        setCurrentSong(orderedQueue[0]);
+        setCurrentSong(originalQueue[0]);
       }
     }
   };
@@ -166,6 +163,8 @@ const Radio = () => {
   };
 
   const selectSong = (song) => {
+    const newIndex = queue.findIndex((s) => s.uniqueId === song.uniqueId);
+    setCurrentIndex(newIndex);
     setCurrentSong(song);
     setIsPlaying(true);
     setProgress(0);
@@ -304,7 +303,7 @@ const Radio = () => {
               exit={isMobile ? "mobileExit" : "desktopExit"}
               variants={queueVariants}
               transition={{ type: "spring", stiffness: 300, damping: 30 }}
-              className={`lg:w-1/3 bg-[#252323] rounded-lg p-6 overflow-hidden ${
+              className={`lg:w-1/3 bg-[#252323] lg:rounded-lg p-6 overflow-hidden ${
                 isMobile
                   ? "fixed inset-x-0 bottom-0 z-20 h-full"
                   : "lg:h-[80vh] fixed inset-0 z-10 lg:relative"
@@ -329,47 +328,41 @@ const Radio = () => {
               >
                 <ul className="pb-5">
                   {queue.map((song, index) => (
-                    <div
+                    <motion.li
                       key={song.uniqueId}
-                      className="flex justify-between pr-2"
+                      initial={{ x: -20, opacity: 0 }}
+                      animate={{ x: 0, opacity: 1 }}
+                      transition={{ duration: 0.3, delay: index * 0.05 }}
+                      whileHover={{ scale: 1.02 }}
+                      className={`relative py-2 px-4 rounded-lg mb-2 flex items-center gap-x-2 pr-2 ${
+                        currentSong && currentSong.uniqueId === song.uniqueId
+                          ? "bg-[#dfff1d] text-black"
+                          : "hover:bg-gray-800"
+                      }`}
+                      onClick={() => selectSong(song)}
                     >
-                      <motion.li
-                        initial={{ x: -20, opacity: 0 }}
-                        animate={{ x: 0, opacity: 1 }}
-                        transition={{ duration: 0.3, delay: index * 0.05 }}
-                        whileHover={{ scale: 1.02 }}
-                        className={`py-2 px-4 rounded-lg mb-2 flex items-center ${
-                          currentSong && currentSong.uniqueId === song.uniqueId
-                            ? "bg-[#dfff1d] text-black"
-                            : "hover:bg-gray-800"
-                        }`}
-                        onClick={() => selectSong(song)}
-                      >
-                        <img
-                          src={song.albumImage}
-                          alt={song.albumTitle}
-                          className="w-10 h-10 object-cover rounded-lg mr-3"
-                        />
-                        <div>
-                          <p className="font-semibold">{song.name}</p>
-                          <p className="text-sm text-gray-400">
-                            {song.albumTitle}
-                          </p>
-                        </div>
-                      </motion.li>
-                      <motion.a
-                        whileHover={{ scale: 1.1 }}
-                        whileTap={{ scale: 0.9 }}
+                      <img
+                        src={song.albumImage}
+                        alt={song.albumTitle}
+                        className="w-10 h-10 object-cover rounded-lg mr-3"
+                      />
+                      <div>
+                        <p className="font-semibold">{song.name}</p>
+                        <p className="text-sm text-gray-400">
+                          {song.albumTitle}
+                        </p>
+                      </div>
+                      <a
                         href={song.link}
                         target="_blank"
                         rel="noopener noreferrer"
                       >
                         <IoMdLink
                           size={20}
-                          className="text-white hover:text-[#dfff1d] cursor-pointer"
+                          className="hover:scale-105 cursor-pointer absolute right-4 top-1/2 -translate-y-1/2"
                         />
-                      </motion.a>
-                    </div>
+                      </a>
+                    </motion.li>
                   ))}
                 </ul>
               </motion.div>

@@ -58,7 +58,7 @@ const Modal = ({ album, onClose }) => {
           animate={{ scale: 1, opacity: 1 }}
           exit={{ scale: 0.9, opacity: 0 }}
           transition={{ duration: 0.3 }}
-          className="bg-[#252323] p-6 rounded-lg max-w-lg w-[80%] md:w-full relative"
+          className="bg-[#252323] p-6 rounded-lg h-auto max-w-lg w-[80%] md:w-full relative"
         >
           <motion.button
             whileHover={{ scale: 1.1 }}
@@ -83,13 +83,13 @@ const Modal = ({ album, onClose }) => {
               transition={{ delay: 0.2 }}
               src={album.image}
               alt={album.title}
-              className="m-auto w-28 md:w-48 h-28 md:h-48 rounded-md object-cover transform transition-transform duration-300 hover:scale-[1.02] lg:brightness-50 hover:brightness-100"
+              className="w-28 md:w-48 h-28 md:h-48 rounded-md object-cover transform transition-transform duration-300 hover:scale-[1.02] lg:brightness-50 hover:brightness-100"
             />
             <motion.ul
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.3 }}
-              className="max-h-40 md:max-h-48 pr-2 md:pr-3 w-full overflow-y-auto scrollbar-thin scrollbar-thumb-[#dfff1d] scrollbar-track-transparent"
+              className="h-full lg:max-h-48 pr-2 md:pr-3 w-full overflow-y-auto scrollbar-thin scrollbar-thumb-[#dfff1d] scrollbar-track-transparent justify-center"
             >
               {album.songs.map((song, index) => (
                 <motion.li
