@@ -74,7 +74,9 @@ const Modal = ({ album, onClose }) => {
             transition={{ delay: 0.1 }}
             className="text-left mb-4"
           >
-            <h3 className="text-2xl font-bold text-[#dfff1d]">{album.title}</h3>
+            <h3 className="text-2xl w-[80%] truncate font-bold text-[#dfff1d]">
+              {album.title}
+            </h3>
           </motion.div>
           <div className="flex gap-3 md:gap-5">
             <motion.img
@@ -86,8 +88,8 @@ const Modal = ({ album, onClose }) => {
               className="w-28 md:w-48 h-28 md:h-48 rounded-md object-cover transform transition-transform duration-300 hover:scale-[1.02] lg:brightness-50 hover:brightness-100"
             />
             <motion.ul
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3 }}
               className="h-full lg:max-h-48 pr-2 md:pr-3 w-full overflow-y-auto scrollbar-thin scrollbar-thumb-[#dfff1d] scrollbar-track-transparent justify-center"
             >
