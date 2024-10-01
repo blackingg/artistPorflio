@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   IoPlayCircleOutline,
@@ -24,6 +24,32 @@ const Radio = () => {
   const [showQueue, setShowQueue] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const audioRef = useRef(null);
+  const isAudioLoaded = useRef(false);
+
+  const handleSongChange = useCallback(
+    (direction) => {
+      if (queue.length > 0) {
+        const currentIndex = currentSong
+          ? queue.findIndex((song) => song.uniqueId === currentSong.uniqueId)
+          : -1;
+        const newIndex =
+          (currentIndex + direction + queue.length) % queue.length;
+        setCurrentSong(queue[newIndex]);
+        setIsPlaying(true);
+        setProgress(0);
+      }
+    },
+    [queue, currentSong]
+  );
+
+  const handleNextSong = useCallback(
+    () => handleSongChange(1),
+    [handleSongChange]
+  );
+  const handlePrevSong = useCallback(
+    () => handleSongChange(-1),
+    [handleSongChange]
+  );
 
   useEffect(() => {
     const allSongs = albums.flatMap((album, albumIndex) =>
@@ -40,19 +66,31 @@ const Radio = () => {
     if (allSongs.length > 0) {
       setCurrentSong(allSongs[0]);
     }
-  }, []);
+  }, [albums]);
 
   useEffect(() => {
     if (currentSong && audioRef.current) {
-      audioRef.current.src = currentSong.songUrl;
-      if (isPlaying) {
-        audioRef.current.play();
+      if (audioRef.current.src !== currentSong.songUrl) {
+        audioRef.current.src = currentSong.songUrl;
+        isAudioLoaded.current = false;
+        audioRef.current.load();
+      } else if (!currentSong && audioRef.current) {
+        audioRef.current.src = "";
       }
     }
-  }, [currentSong, isPlaying]);
+  }, [currentSong]);
 
   useEffect(() => {
     const audio = audioRef.current;
+
+    const handleCanPlayThrough = () => {
+      isAudioLoaded.current = true;
+      if (isPlaying) {
+        audio
+          .play()
+          .catch((error) => console.error("Error playing audio:", error));
+      }
+    };
 
     const updateProgress = () => {
       if (audio.duration) {
@@ -63,20 +101,24 @@ const Radio = () => {
     const handleSongEnd = () => {
       if (repeatMode) {
         audio.currentTime = 0;
-        audio.play();
+        audio
+          .play()
+          .catch((error) => console.error("Error replaying audio:", error));
       } else {
         handleNextSong();
       }
     };
 
+    audio.addEventListener("canplaythrough", handleCanPlayThrough);
     audio.addEventListener("timeupdate", updateProgress);
     audio.addEventListener("ended", handleSongEnd);
 
     return () => {
+      audio.removeEventListener("canplaythrough", handleCanPlayThrough);
       audio.removeEventListener("timeupdate", updateProgress);
       audio.removeEventListener("ended", handleSongEnd);
     };
-  }, [repeatMode, currentIndex, queue]);
+  }, [repeatMode, isPlaying, handleNextSong]);
 
   useEffect(() => {
     const checkMobile = () => {
@@ -91,19 +133,22 @@ const Radio = () => {
     setRepeatMode(!repeatMode);
   };
 
-  const handlePlayPause = () => {
-    if (currentSong) {
-      if (isPlaying) {
-        audioRef.current.pause();
-      } else {
-        audioRef.current.play();
-      }
-      setIsPlaying(!isPlaying);
-    } else if (queue.length > 0) {
+  const handlePlayPause = useCallback(() => {
+    if (!currentSong && queue.length > 0) {
       setCurrentSong(queue[0]);
       setIsPlaying(true);
+    } else if (audioRef.current) {
+      if (isPlaying) {
+        audioRef.current.pause();
+      } else if (isAudioLoaded.current) {
+        audioRef.current.play().catch((error) => {
+          console.error("Error playing audio:", error);
+          alert("Unable to play the audio. Please try again.");
+        });
+      }
+      setIsPlaying(!isPlaying);
     }
-  };
+  }, [currentSong, queue, isPlaying]);
 
   const handleShuffle = () => {
     setShuffleMode(!shuffleMode);
@@ -118,30 +163,6 @@ const Radio = () => {
       if (!currentSong) {
         setCurrentSong(originalQueue[0]);
       }
-    }
-  };
-
-  const handleNextSong = () => {
-    if (queue.length > 0) {
-      const currentIndex = currentSong
-        ? queue.findIndex((song) => song.uniqueId === currentSong.uniqueId)
-        : -1;
-      const nextIndex = (currentIndex + 1) % queue.length;
-      setCurrentSong(queue[nextIndex]);
-      setIsPlaying(true);
-      setProgress(0);
-    }
-  };
-
-  const handlePrevSong = () => {
-    if (queue.length > 0) {
-      const currentIndex = currentSong
-        ? queue.findIndex((song) => song.uniqueId === currentSong.uniqueId)
-        : 0;
-      const prevIndex = (currentIndex - 1 + queue.length) % queue.length;
-      setCurrentSong(queue[prevIndex]);
-      setIsPlaying(true);
-      setProgress(0);
     }
   };
 
@@ -163,11 +184,15 @@ const Radio = () => {
   };
 
   const selectSong = (song) => {
-    const newIndex = queue.findIndex((s) => s.uniqueId === song.uniqueId);
-    setCurrentIndex(newIndex);
-    setCurrentSong(song);
-    setIsPlaying(true);
-    setProgress(0);
+    if (currentSong && currentSong.uniqueId === song.uniqueId) {
+      handlePlayPause();
+    } else {
+      const newIndex = queue.findIndex((s) => s.uniqueId === song.uniqueId);
+      setCurrentIndex(newIndex);
+      setCurrentSong(song);
+      setIsPlaying(true);
+      setProgress(0);
+    }
   };
 
   return (
