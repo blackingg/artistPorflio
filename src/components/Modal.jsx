@@ -93,13 +93,13 @@ const Modal = ({ album, onClose }) => {
             >
               {album.songs.map((song, index) => (
                 <motion.li
-                  key={index}
+                  key={`${album.title}-${index}`}
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.1 * index }}
                   className="py-2 border-b border-gray-700 last:border-b-0 text-white flex justify-between items-center"
                 >
-                  <span className="mr-2 text-sm sm:text-base truncate flex-grow">
+                  <span className="text-sm sm:text-base truncate flex-grow">
                     {song.name}
                   </span>
                   <div className="flex items-center space-x-2">
