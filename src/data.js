@@ -12,7 +12,13 @@ export const albums = [
     id: 1,
     title: "Attention",
     image: "/img/attention.jpg",
-    songs: [{ name: "Attention", songUrl: "/songs/attention.mp3", link: "#" }],
+    songs: [
+      {
+        name: "Attention",
+        songUrl: "/songs/attention.mp3",
+        link: "https://ffm.to/attention-dafash",
+      },
+    ],
   },
   {
     id: 2,
@@ -22,11 +28,23 @@ export const albums = [
       {
         name: "Genesis (Intro)",
         songUrl: "/songs/genesis_intro.mp3",
-        link: "#",
+        link: "https://ffm.to/genesis-dafash",
       },
-      { name: "Right Now", songUrl: "/songs/right_now.mp3", link: "#" },
-      { name: "Lupita", songUrl: "/songs/lupita.mp3", link: "#" },
-      { name: "Apollo", songUrl: "/songs/apollo.mp3", link: "#" },
+      {
+        name: "Right Now",
+        songUrl: "/songs/right_now.mp3",
+        link: "https://ffm.to/genesis-dafash",
+      },
+      {
+        name: "Lupita",
+        songUrl: "/songs/lupita.mp3",
+        link: "https://ffm.to/genesis-dafash",
+      },
+      {
+        name: "Apollo",
+        songUrl: "/songs/apollo.mp3",
+        link: "https://ffm.to/genesis-dafash",
+      },
     ],
   },
   {
@@ -37,7 +55,7 @@ export const albums = [
       {
         name: "Fight Somebody",
         songUrl: "/songs/fight_somebody.mp3",
-        link: "#",
+        link: "https://ffm.to/fs-dafash",
       },
     ],
   },
@@ -49,7 +67,7 @@ export const albums = [
       {
         name: "Shege Wey I see",
         songUrl: "/songs/shege_wey_i_see.mp3",
-        link: "#",
+        link: "https://ffm.to/shege-wey-i-see",
       },
     ],
   },
@@ -61,27 +79,27 @@ export const albums = [
       {
         name: "Duro Mi",
         songUrl: "/songs/duro_mi.mp3",
-        link: "#",
+        link: "https://ffm.to/odyssey-ep",
       },
       {
         name: "Shege Wey I see",
         songUrl: "/songs/shege_wey_i_see.mp3",
-        link: "#",
+        link: "https://ffm.to/odyssey-ep",
       },
       {
         name: "Amazing",
         songUrl: "/songs/amazing.mp3",
-        link: "#",
+        link: "https://ffm.to/odyssey-ep",
       },
       {
         name: "Mia",
         songUrl: "/songs/mia.mp3",
-        link: "#",
+        link: "https://ffm.to/odyssey-ep",
       },
       {
         name: "Fight Somebody",
         songUrl: "/songs/fight_somebody.mp3",
-        link: "#",
+        link: "https://ffm.to/odyssey-ep",
       },
     ],
   },
